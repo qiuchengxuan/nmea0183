@@ -14,6 +14,52 @@ pub mod time;
 
 pub type Quality = position_mode::PositionMode;
 
+#[derive(Copy, Clone, Debug, PartialEq)]
+pub enum OperationMode {
+    Auto,
+    Manual,
+}
+
+impl Default for OperationMode {
+    fn default() -> Self {
+        Self::Manual
+    }
+}
+
+impl From<&[u8]> for OperationMode {
+    fn from(bytes: &[u8]) -> Self {
+        match bytes.first().map(|&b| b).unwrap_or(b'M') {
+            b'A' => Self::Auto,
+            b'M' => Self::Manual,
+            _ => Self::Manual,
+        }
+    }
+}
+
+#[derive(Copy, Clone, Debug, PartialEq)]
+pub enum NavigationMode {
+    NoFix,
+    _3DFix,
+    _2DFix,
+}
+
+impl Default for NavigationMode {
+    fn default() -> Self {
+        Self::NoFix
+    }
+}
+
+impl From<&[u8]> for NavigationMode {
+    fn from(bytes: &[u8]) -> Self {
+        match bytes.first().map(|&b| b).unwrap_or(b'1') {
+            b'1' => Self::NoFix,
+            b'2' => Self::_2DFix,
+            b'3' => Self::_3DFix,
+            _ => Self::NoFix,
+        }
+    }
+}
+
 #[derive(Copy, Clone, Default, Debug, PartialEq)]
 pub struct Status(pub bool);
 
@@ -70,13 +116,13 @@ macro_rules! impl_from_str {
                 let mut splitted = bytes.split(|&b| b == b'.');
                 let mut integer = I::default();
                 if let Some(field) = splitted.next() {
-                    integer = unsafe { utf8(field) }.parse().unwrap();
+                    integer = unsafe { utf8(field) }.parse().unwrap_or_default();
                 }
                 let mut decimal_length = 0;
                 let mut decimal = $type::default();
                 if let Some(field) = splitted.next() {
                     decimal_length = core::cmp::min(field.len(), $length);
-                    decimal = unsafe { utf8(&field[..decimal_length]) }.parse().unwrap();
+                    decimal = unsafe { utf8(&field[..decimal_length]) }.parse().unwrap_or_default();
                 }
                 Self {
                     integer,

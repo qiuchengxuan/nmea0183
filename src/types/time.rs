@@ -14,10 +14,16 @@ impl From<&[u8]> for Time {
             return Self::default();
         }
         let mut splitted = bytes.split(|&b| b == b'.');
-        let hhmmss = unsafe { utf8(splitted.next().unwrap()) };
-        let sub_seconds = unsafe { utf8(splitted.next().unwrap()) };
-        let hhmmss: u32 = hhmmss.parse().unwrap();
-        let sub_seconds: u8 = sub_seconds.parse().unwrap();
+        let hhmmss = match splitted.next() {
+            Some(field) => unsafe { utf8(field) },
+            None => return Time::default(),
+        };
+        let sub_seconds = match splitted.next() {
+            Some(field) => unsafe { utf8(field) },
+            None => return Time::default(),
+        };
+        let hhmmss: u32 = hhmmss.parse().unwrap_or(0);
+        let sub_seconds: u8 = sub_seconds.parse().unwrap_or(0);
         Time {
             hour: (hhmmss / 10000) as u8,
             minute: ((hhmmss / 100) % 100) as u8,

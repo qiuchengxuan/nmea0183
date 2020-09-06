@@ -2,21 +2,24 @@ use core::str::from_utf8_unchecked;
 
 use crate::messages::gga::GGA;
 use crate::messages::gns::GNS;
+use crate::messages::gsa::GSA;
 use crate::messages::rmc::RMC;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum SentenceFormatter {
-    RMC = 0,
+    GGA = 0,
     GNS,
-    GGA,
+    GSA,
+    RMC,
 }
 
 impl SentenceFormatter {
     pub fn try_from(bytes: &[u8]) -> Option<SentenceFormatter> {
         match bytes {
-            b"RMC" => Some(Self::RMC),
-            b"GNS" => Some(Self::GNS),
             b"GGA" => Some(Self::GGA),
+            b"GNS" => Some(Self::GNS),
+            b"GSA" => Some(Self::GSA),
+            b"RMC" => Some(Self::RMC),
             _ => None,
         }
     }
@@ -24,9 +27,10 @@ impl SentenceFormatter {
 
 #[derive(Clone, Debug)]
 pub enum Message {
-    RMC(RMC),
     GNS(GNS),
     GGA(GGA),
+    GSA(GSA),
+    RMC(RMC),
 }
 
 impl Message {
@@ -55,9 +59,10 @@ impl Message {
         };
 
         match &address[2..] {
-            b"RMC" => Some(Message::RMC(RMC::from(value))),
-            b"GNS" => Some(Message::GNS(GNS::from(value))),
             b"GGA" => Some(Message::GGA(GGA::from(value))),
+            b"GNS" => Some(Message::GNS(GNS::from(value))),
+            b"GSA" => Some(Message::GSA(GSA::from(value))),
+            b"RMC" => Some(Message::RMC(RMC::from(value))),
             _ => None,
         }
     }

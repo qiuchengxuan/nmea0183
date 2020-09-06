@@ -35,8 +35,14 @@ impl From<&[u8]> for Latitude {
             return Self::default();
         }
         let mut s = bytes.split(|&b| b == b'.');
-        let integer: i32 = unsafe { utf8(s.next().unwrap()) }.parse().unwrap();
-        let decimal: i32 = unsafe { utf8(s.next().unwrap()) }.parse().unwrap();
+        let mut integer = 0i32;
+        if let Some(field) = s.next() {
+            integer = unsafe { utf8(field) }.parse().unwrap_or(0);
+        }
+        let mut decimal = 0i32;
+        if let Some(field) = s.next() {
+            decimal = unsafe { utf8(field) }.parse().unwrap_or(0);
+        }
         Self(integer * 100000 + decimal)
     }
 }

@@ -1,6 +1,6 @@
 [package]
 name = "nmea0183-core"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["qiuchengxuan <qiuchengxuan@gmail.com>"]
 edition = "2018"
 description = "implement NMEA0183 protocol without parsing floating point"

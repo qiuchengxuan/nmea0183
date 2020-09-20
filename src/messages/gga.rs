@@ -3,7 +3,7 @@ use core::str::from_utf8_unchecked as utf8;
 use crate::types::latitude::Latitude;
 use crate::types::longitude::Longitude;
 use crate::types::time::Time;
-use crate::types::{IntegerFloat, Quality};
+use crate::types::{IntegerDecimal, Quality};
 
 #[derive(Clone, Default, Debug)]
 pub struct GGA {
@@ -12,8 +12,8 @@ pub struct GGA {
     pub longitude: Longitude,
     pub quality: Quality,
     pub num_satellites: u8,
-    pub hdop: IntegerFloat<u8, u8>,
-    pub altitude: IntegerFloat<i32, u8>,
+    pub hdop: IntegerDecimal,
+    pub altitude: IntegerDecimal,
 }
 
 impl From<&[u8]> for GGA {
@@ -33,8 +33,8 @@ impl From<&[u8]> for GGA {
         }
         let quality = Quality::from(fields.next().unwrap());
         let num_satellites: u8 = unsafe { utf8(fields.next().unwrap()) }.parse().unwrap_or(0);
-        let hdop: IntegerFloat<u8, u8> = fields.next().unwrap().into();
-        let altitude: IntegerFloat<i32, u8> = fields.next().unwrap().into();
+        let hdop: IntegerDecimal = fields.next().unwrap().into();
+        let altitude: IntegerDecimal = fields.next().unwrap().into();
         Self { time, latitude, longitude, quality, num_satellites, hdop, altitude }
     }
 }

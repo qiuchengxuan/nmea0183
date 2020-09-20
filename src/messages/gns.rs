@@ -4,7 +4,7 @@ use crate::types::latitude::Latitude;
 use crate::types::longitude::Longitude;
 use crate::types::position_mode::PositionMode;
 use crate::types::time::Time;
-use crate::types::IntegerFloat;
+use crate::types::IntegerDecimal;
 
 #[derive(Clone, Default, Debug)]
 pub struct GNS {
@@ -13,8 +13,8 @@ pub struct GNS {
     pub longitude: Longitude,
     pub position_modes: [PositionMode; 4],
     pub num_satellites: u8,
-    pub hdop: IntegerFloat<u8, u8>,
-    pub altitude: IntegerFloat<i32, u8>,
+    pub hdop: IntegerDecimal,
+    pub altitude: IntegerDecimal,
 }
 
 impl From<&[u8]> for GNS {
@@ -38,8 +38,8 @@ impl From<&[u8]> for GNS {
             position_modes[i] = PositionMode::from(&field[i..i + 1]);
         }
         let num_satellites: u8 = unsafe { utf8(fields.next().unwrap()) }.parse().unwrap_or(0);
-        let hdop: IntegerFloat<u8, u8> = fields.next().unwrap().into();
-        let altitude: IntegerFloat<i32, u8> = fields.next().unwrap().into();
+        let hdop: IntegerDecimal = fields.next().unwrap().into();
+        let altitude: IntegerDecimal = fields.next().unwrap().into();
         Self { time, latitude, longitude, position_modes, num_satellites, hdop, altitude }
     }
 }

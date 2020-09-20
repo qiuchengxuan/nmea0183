@@ -3,7 +3,7 @@ use crate::types::latitude::Latitude;
 use crate::types::longitude::Longitude;
 use crate::types::position_mode::PositionMode;
 use crate::types::time::Time;
-use crate::types::{IntegerFloat, Status};
+use crate::types::{IntegerDecimal, Status};
 
 #[derive(Clone, Default, Debug)]
 pub struct RMC {
@@ -11,10 +11,10 @@ pub struct RMC {
     pub status: Status,
     pub latitude: Latitude,
     pub longitude: Longitude,
-    pub speed: IntegerFloat<i32, u16>,
-    pub course: IntegerFloat<u16, u8>,
+    pub speed: IntegerDecimal,
+    pub course: IntegerDecimal,
     pub date: Date,
-    pub heading: Option<IntegerFloat<u16, u8>>,
+    pub heading: Option<IntegerDecimal>,
     pub position_mode: PositionMode,
 }
 
@@ -34,16 +34,16 @@ impl From<&[u8]> for RMC {
         if fields.next().unwrap() == b"W" {
             longitude.0 = -longitude.0;
         }
-        let speed: IntegerFloat<i32, u16> = fields.next().unwrap().into();
-        let course: IntegerFloat<u16, u8> = fields.next().unwrap().into();
+        let speed: IntegerDecimal = fields.next().unwrap().into();
+        let course: IntegerDecimal = fields.next().unwrap().into();
         let date: Date = fields.next().unwrap().into();
-        let mut heading: Option<IntegerFloat<u16, u8>> = None;
+        let mut heading: Option<IntegerDecimal> = None;
         let field = fields.next().unwrap();
         let mvew = fields.next().unwrap();
         if field.len() > 0 {
-            let mut value: IntegerFloat<u16, u8> = field.into();
+            let mut value: IntegerDecimal = field.into();
             if mvew == b"W" {
-                value.integer += 180;
+                value += 180;
             }
             heading = Some(value);
         }

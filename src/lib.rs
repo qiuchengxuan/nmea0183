@@ -12,7 +12,7 @@ pub mod types;
 
 pub use message::{Message, SentenceFormatter};
 
-const MAX_MESSAGE_SIZE: usize = 79;
+pub const MAX_MESSAGE_SIZE: usize = 79;
 
 pub struct Parser {
     buffer: [u8; MAX_MESSAGE_SIZE],
@@ -31,6 +31,10 @@ impl Parser {
             enabled |= 1 << (message as usize);
         }
         Self { buffer: [0u8; MAX_MESSAGE_SIZE], index: 0, enabled }
+    }
+
+    pub fn reset(&mut self) {
+        self.index = 0;
     }
 
     fn parse_line(&mut self, line: &[u8]) -> Option<Message> {

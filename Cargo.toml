@@ -8,8 +8,5 @@ license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[dependencies]
-micromath = "1.0"
-
 [dev-dependencies]
 pretty_assertions = "0.4"

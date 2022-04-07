@@ -60,6 +60,6 @@ mod test {
         assert_eq!("111.5#1", format!("{:?}", gns.altitude));
 
         let bytes = b"103600.01,,,,,,,,,,,,V";
-        GNS::from(&bytes[..]);
+        let _ = GNS::from(&bytes[..]);
     }
 }

@@ -72,6 +72,10 @@ impl IntegerDecimal {
         Self(value << 8 | decimal_length as i32)
     }
 
+    pub fn real(self) -> i32 {
+        self.0 >> 8
+    }
+
     pub fn decimal_length(self) -> u8 {
         self.0 as u8
     }

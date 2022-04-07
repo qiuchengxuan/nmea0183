@@ -1,7 +1,5 @@
 #![cfg_attr(not(test), no_std)]
 
-extern crate micromath;
-
 #[cfg(test)]
 #[macro_use]
 extern crate pretty_assertions;

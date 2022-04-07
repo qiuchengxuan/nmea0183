@@ -11,6 +11,7 @@ pub struct RMC {
     pub status: Status,
     pub latitude: Latitude,
     pub longitude: Longitude,
+    /// knots
     pub speed: IntegerDecimal,
     pub course: IntegerDecimal,
     pub date: Date,
@@ -20,9 +21,6 @@ pub struct RMC {
 
 impl From<&[u8]> for RMC {
     fn from(bytes: &[u8]) -> Self {
-        if bytes.iter().fold(0, |sum, &b| sum + (b == b',') as usize) < 11 {
-            return Self::default();
-        }
         let mut fields = bytes.split(|&b| b == b',');
         let time = Time::from(fields.next().unwrap());
         let status = Status::from(fields.next().unwrap());
@@ -34,7 +32,7 @@ impl From<&[u8]> for RMC {
         if fields.next().unwrap() == b"W" {
             longitude.0 = -longitude.0;
         }
-        let speed: IntegerDecimal = fields.next().unwrap().into();
+        let speed: IntegerDecimal = fields.next().unwrap_or(b"0.0").into();
         let course: IntegerDecimal = fields.next().unwrap().into();
         let date: Date = fields.next().unwrap().into();
         let mut heading: Option<IntegerDecimal> = None;
@@ -68,6 +66,6 @@ mod test {
         assert_eq!("Autonomous", format!("{:?}", rmc.position_mode));
 
         let bytes = b"083559.00,,,,,,,,,,,,";
-        RMC::from(&bytes[..]);
+        let _ = RMC::from(&bytes[..]);
     }
 }

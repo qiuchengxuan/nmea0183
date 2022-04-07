@@ -13,6 +13,7 @@ pub struct GGA {
     pub quality: Quality,
     pub num_satellites: u8,
     pub hdop: IntegerDecimal,
+    /// meters
     pub altitude: IntegerDecimal,
 }
 
@@ -55,6 +56,6 @@ mod test {
         assert_eq!("499.6#1", format!("{:?}", gga.altitude));
 
         let bytes = b"092725.00,,,,,,,,,,,,,";
-        GGA::from(&bytes[..]);
+        let _ = GGA::from(&bytes[..]);
     }
 }
